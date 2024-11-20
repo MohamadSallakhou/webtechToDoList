@@ -1,0 +1,1 @@
+{"root":["./src/main.ts","./src/router/index.ts","./src/types/task.ts","./src/app.vue","./src/components/addtask.vue","./src/components/edittask.vue","./src/components/taskitem.vue","./src/components/tasklist.vue","./src/views/aboutview.vue"],"version":"5.6.3"}
