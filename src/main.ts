@@ -1,11 +1,18 @@
-import './assets/main.css'
+import './assets/main.css';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import axios from 'axios';
 
-const app = createApp(App)
+// Setze die Basis-URL für Axios
+axios.defaults.baseURL = 'http://localhost:8080/api'; // Ändere dies später auf die Render-Backend-URL
 
-app.use(router)
+// Optional: Axios global in der App verfügbar machen
+const app = createApp(App);
 
-app.mount('#app')
+app.config.globalProperties.$axios = axios; // Dadurch kannst du Axios in jeder Komponente als this.$axios nutzen
+
+app.use(router);
+
+app.mount('#app');
