@@ -5,27 +5,27 @@
     <button @click="submitEdit" class="save-button">Speichern</button>
   </div>
 </template>
-
 <script lang="ts">
-import { defineComponent } from 'vue';
-import type { Task } from '../types/Task';
+
+import { Task } from '../types/Task';
 
 export default defineComponent({
   name: 'EditTask',
   props: {
     task: {
       type: Object as () => Task,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['editTask'],
   methods: {
     submitEdit() {
-      this.$emit('editTask', this.task); // Emit the edited task
-    }
-  }
+      this.$emit('editTask', this.task); // Aktualisierte Aufgabe senden
+    },
+  },
 });
 </script>
+
 
 <style scoped>
 .edit-task {

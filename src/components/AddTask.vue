@@ -12,30 +12,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+
+import { Task } from '../types/Task';
 
 export default defineComponent({
   name: 'AddTask',
   emits: ['addTask'],
   setup(_, { emit }) {
-    // Define TaskName as a ref variable of type `string`
-    const taskName = ref<string>('');
+    const taskName = ref('');
 
     const submitTask = () => {
       if (taskName.value.trim()) {
-        // Add task and emit event
-        emit('addTask', { id: Date.now(), name: taskName.value });
-        taskName.value = ''; // Reset input
+        const newTask: Task = {
+          id: Date.now(), // Generiere eine temporäre ID
+          name: taskName.value,
+          completed: false,
+        };
+        emit('addTask', newTask); // Aufgabe hinzufügen
+        taskName.value = ''; // Eingabe zurücksetzen
       }
     };
 
-    return {
-      taskName,
-      submitTask
-    };
-  }
+    return { taskName, submitTask };
+  },
 });
 </script>
+
 
 <style scoped>
 .add-task {

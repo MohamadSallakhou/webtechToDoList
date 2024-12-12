@@ -1,4 +1,6 @@
 import { RouterLink, RouterView } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 ; /* PartiallyEnd: #3632/scriptSetup.vue */
 const __VLS_fnComponent = (await import('vue')).defineComponent({});

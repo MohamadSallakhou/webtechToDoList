@@ -14,15 +14,16 @@
     <EditTask v-if="selectedTask" :task="selectedTask" @editTask="editTask" />
   </div>
 </template>
+<script lang="ts">
 
-<script>
-import axios from "axios";
-import TaskItem from "./TaskItem.vue";
-import AddTask from "./AddTask.vue";
-import EditTask from "./EditTask.vue";
+import TaskItem from './TaskItem.vue';
+import AddTask from './AddTask.vue';
+import EditTask from './EditTask.vue';
+import { Task } from '../types/Task'; // Importiere das Interface
 
-export default {
-  name: "TaskList",
+const BACKEND_URL = 'https://todolist-zdkp.onrender.com/api/tasks';
+
+export default defineComponent({
   components: {
     TaskItem,
     AddTask,
@@ -30,73 +31,60 @@ export default {
   },
   data() {
     return {
-      tasks: [], // Liste aller Aufgaben
-      selectedTask: null, // Aktuell bearbeitete Aufgabe
+      tasks: [] as Task[], // Typisierte Liste
+      selectedTask: null as Task | null, // Aktuell bearbeitete Aufgabe
     };
   },
   methods: {
-    // Aufgaben abrufen
-    async fetchTasks() {
+    async fetchTasks(): Promise<void> {
       try {
-        const response = await axios.get(
-            "https://todolist-zdkp.onrender.com/api/tasks"
-        );
-        this.tasks = response.data; // Aufgaben in der Liste speichern
+        const response = await axios.get<Task[]>(BACKEND_URL);
+        this.tasks = response.data;
       } catch (error) {
-        console.error("Fehler beim Abrufen der Aufgaben:", error.message);
+        console.error('Fehler beim Abrufen der Aufgaben:', error.message);
       }
     },
-    // Neue Aufgabe hinzufügen
-    async addTask(task) {
+    async addTask(task: Task): Promise<void> {
       try {
-        const response = await axios.post(
-            "https://todolist-zdkp.onrender.com/api/tasks",
-            task
-        );
-        this.tasks.push(response.data); // Aufgabe zur Liste hinzufügen
+        const response = await axios.post<Task>(BACKEND_URL, task);
+        this.tasks.push(response.data);
       } catch (error) {
-        console.error("Fehler beim Hinzufügen der Aufgabe:", error.message);
+        console.error('Fehler beim Hinzufügen der Aufgabe:', error.message);
       }
     },
-    // Aufgabe löschen
-    async deleteTask(taskId) {
+    async deleteTask(taskId: number): Promise<void> {
       try {
-        await axios.delete(
-            `https://todolist-zdkp.onrender.com/api/tasks/${taskId}`
-        );
+        await axios.delete(`${BACKEND_URL}/${taskId}`);
         this.tasks = this.tasks.filter((task) => task.id !== taskId);
       } catch (error) {
-        console.error("Fehler beim Löschen der Aufgabe:", error.message);
+        console.error('Fehler beim Löschen der Aufgabe:', error.message);
       }
     },
-    // Aufgabe bearbeiten
-    openEditTask(task) {
-      this.selectedTask = { ...task }; // Aufgabe für die Bearbeitung auswählen
+    openEditTask(task: Task): void {
+      this.selectedTask = { ...task };
     },
-    // Aufgabe aktualisieren
-    async editTask(updatedTask) {
+    async editTask(updatedTask: Task): Promise<void> {
       try {
-        const response = await axios.put(
-            `https://todolist-zdkp.onrender.com/api/tasks/${updatedTask.id}`,
+        const response = await axios.put<Task>(
+            `${BACKEND_URL}/${updatedTask.id}`,
             updatedTask
         );
-        const index = this.tasks.findIndex(
-            (task) => task.id === updatedTask.id
-        );
+        const index = this.tasks.findIndex((task) => task.id === updatedTask.id);
         if (index !== -1) {
-          this.tasks.splice(index, 1, response.data); // Aufgabe in der Liste aktualisieren
+          this.tasks.splice(index, 1, response.data);
         }
-        this.selectedTask = null; // Bearbeitung beenden
+        this.selectedTask = null;
       } catch (error) {
-        console.error("Fehler beim Bearbeiten der Aufgabe:", error.message);
+        console.error('Fehler beim Bearbeiten der Aufgabe:', error.message);
       }
     },
   },
   mounted() {
-    this.fetchTasks(); // Aufgaben beim Laden der Komponente abrufen
+    this.fetchTasks();
   },
-};
+});
 </script>
+
 
 <style scoped>
 .task-list {
