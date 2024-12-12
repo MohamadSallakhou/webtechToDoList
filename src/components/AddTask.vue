@@ -2,42 +2,40 @@
   <div class="add-task">
     <h3>Neue Aufgabe hinzufügen</h3>
     <input
-      type="text"
-      v-model="taskName"
-      placeholder="Aufgabenname"
-      class="task-input"
+        type="text"
+        v-model="taskName"
+        placeholder="Aufgabenname"
+        class="task-input"
     />
     <button @click="submitTask" class="add-button">Hinzufügen</button>
   </div>
 </template>
 
 <script lang="ts">
-
-import { Task } from '../types/Task';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'AddTask',
   emits: ['addTask'],
   setup(_, { emit }) {
-    const taskName = ref('');
+    // Define TaskName as a ref variable of type `string`
+    const taskName = ref<string>('');
 
     const submitTask = () => {
       if (taskName.value.trim()) {
-        const newTask: Task = {
-          id: Date.now(), // Generiere eine temporäre ID
-          name: taskName.value,
-          completed: false,
-        };
-        emit('addTask', newTask); // Aufgabe hinzufügen
-        taskName.value = ''; // Eingabe zurücksetzen
+        // Add task and emit event
+        emit('addTask', { id: Date.now(), name: taskName.value });
+        taskName.value = ''; // Reset input
       }
     };
 
-    return { taskName, submitTask };
-  },
+    return {
+      taskName,
+      submitTask
+    };
+  }
 });
 </script>
-
 
 <style scoped>
 .add-task {
