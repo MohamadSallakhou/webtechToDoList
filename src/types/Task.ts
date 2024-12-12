@@ -1,7 +1,7 @@
 export interface Task {
   id: number;
-  title?: string; // Optional, falls vorhanden
-  description?: string; // Optional, falls vorhanden
+  title?: string;
+  description?: string;
   completed: boolean;
-  name?: string; // Optional, falls es ein Feld 'name' in deinem Backend gibt
+  name?: string; // Add this if 'name' is part of your data model
 }

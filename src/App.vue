@@ -17,19 +17,7 @@
 
     <!-- Main content view -->
     <main>
-      <div>
-        <h1>ToDo Liste</h1>
-        <!-- Zeige alle Aufgaben -->
-        <ul>
-          <li v-for="task in tasks" :key="task.id">
-            {{ task.description }} - {{ task.completed ? "Erledigt" : "Offen" }}
-            <button @click="deleteTask(task.id)">Löschen</button>
-          </li>
-        </ul>
-        <!-- Formular zum Hinzufügen neuer Aufgaben -->
-        <input v-model="newTask" placeholder="Neue Aufgabe hinzufügen" />
-        <button @click="addTask">Hinzufügen</button>
-      </div>
+      <RouterView />
     </main>
 
     <!-- Full-width Footer -->
@@ -40,56 +28,11 @@
 </template>
 
 <script setup lang="ts">
-
-
-// Daten und Methoden
-const tasks = ref([]);
-const newTask = ref("");
-
-// Aufgaben aus dem Backend laden
-const fetchTasks = async () => {
-  try {
-    const response = await axios.get('/tasks');
-    tasks.value = response.data;
-  } catch (error) {
-    console.error('Fehler beim Laden der Aufgaben:', error);
-  }
-};
-
-// Neue Aufgabe hinzufügen
-const addTask = async () => {
-  if (newTask.value.trim() === '') return;
-
-  try {
-    const response = await axios.post('/tasks', {
-      description: newTask.value,
-      completed: false,
-    });
-    tasks.value.push(response.data);
-    newTask.value = ''; // Eingabefeld leeren
-  } catch (error) {
-    console.error('Fehler beim Hinzufügen der Aufgabe:', error);
-  }
-};
-
-// Aufgabe löschen
-const deleteTask = async (id) => {
-  try {
-    await axios.delete(`/tasks/${id}`);
-    tasks.value = tasks.value.filter((task) => task.id !== id);
-  } catch (error) {
-    console.error('Fehler beim Löschen der Aufgabe:', error);
-  }
-};
-
-// Aufgaben beim Laden der Komponente abrufen
-onMounted(() => {
-  fetchTasks();
-});
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <style scoped>
-/* Dein bestehendes Styling bleibt unverändert */
+/* Full width styling */
 .app {
   display: flex;
   flex-direction: column;
@@ -115,7 +58,7 @@ onMounted(() => {
 .nav-container {
   width: 50%;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centers content within each half */
   align-items: center;
 }
 
