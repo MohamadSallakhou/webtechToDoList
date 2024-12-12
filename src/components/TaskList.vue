@@ -1,8 +1,7 @@
 <template>
   <div class="task-list">
-    <h2>Meine Aufgaben</h2>
+    <h2>Aufgabenliste</h2>
     <ul class="task-items">
-      <!-- Render each task using the TaskItem component -->
       <TaskItem
           v-for="task in tasks"
           :key="task.id"
@@ -11,124 +10,101 @@
           @editTask="openEditTask"
       />
     </ul>
-
-    <!-- Render the EditTask component when a task is selected for editing -->
-    <EditTask v-if="selectedTask" :task="selectedTask" @editTask="editTask" />
-
-    <!-- Render the AddTask component for adding a new task -->
     <AddTask @addTask="addTask" />
+    <EditTask v-if="selectedTask" :task="selectedTask" @editTask="editTask" />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import axios from 'axios';
-import TaskItem from './TaskItem.vue';
-import AddTask from './AddTask.vue';
-import EditTask from './EditTask.vue';
-import type { Task } from '../types/Task';
+<script>
+import axios from "axios";
+import TaskItem from "./TaskItem.vue";
+import AddTask from "./AddTask.vue";
+import EditTask from "./EditTask.vue";
 
-const BACKEND_URL = 'http://localhost:8080/api/tasks'; // Passe die URL an dein Backend an
-
-export default defineComponent({
+export default {
+  name: "TaskList",
   components: {
     TaskItem,
     AddTask,
-    EditTask
+    EditTask,
   },
   data() {
     return {
-      tasks: [] as Task[],
-      selectedTask: null as Task | null
+      tasks: [], // Liste aller Aufgaben
+      selectedTask: null, // Aktuell bearbeitete Aufgabe
     };
   },
   methods: {
-    /**
-     * Lädt Aufgaben vom Backend
-     */
+    // Aufgaben abrufen
     async fetchTasks() {
       try {
-        const response = await axios.get(BACKEND_URL);
-        this.tasks = response.data;
+        const response = await axios.get(
+            "https://todolist-zdkp.onrender.com/api/tasks"
+        );
+        this.tasks = response.data; // Aufgaben in der Liste speichern
       } catch (error) {
-        console.error('Fehler beim Laden der Aufgaben:', error);
+        console.error("Fehler beim Abrufen der Aufgaben:", error.message);
       }
     },
-
-    /**
-     * Fügt eine neue Aufgabe hinzu und sendet sie ans Backend
-     * @param {Task} task - Die hinzuzufügende Aufgabe
-     */
-    async addTask(task: Task) {
+    // Neue Aufgabe hinzufügen
+    async addTask(task) {
       try {
-        const response = await axios.post(BACKEND_URL, task);
-        this.tasks.push(response.data);
+        const response = await axios.post(
+            "https://todolist-zdkp.onrender.com/api/tasks",
+            task
+        );
+        this.tasks.push(response.data); // Aufgabe zur Liste hinzufügen
       } catch (error) {
-        console.error('Fehler beim Hinzufügen der Aufgabe:', error);
+        console.error("Fehler beim Hinzufügen der Aufgabe:", error.message);
       }
     },
-
-    /**
-     * Löscht eine Aufgabe nach ihrer ID und entfernt sie vom Backend
-     * @param {number} id - Die ID der zu löschenden Aufgabe
-     */
-    async deleteTask(id: number) {
+    // Aufgabe löschen
+    async deleteTask(taskId) {
       try {
-        await axios.delete(`${BACKEND_URL}/${id}`);
-        this.tasks = this.tasks.filter(task => task.id !== id);
+        await axios.delete(
+            `https://todolist-zdkp.onrender.com/api/tasks/${taskId}`
+        );
+        this.tasks = this.tasks.filter((task) => task.id !== taskId);
       } catch (error) {
-        console.error('Fehler beim Löschen der Aufgabe:', error);
+        console.error("Fehler beim Löschen der Aufgabe:", error.message);
       }
     },
-
-    /**
-     * Öffnet das EditTask-Formular, indem die ausgewählte Aufgabe gesetzt wird
-     * @param {Task} task - Die zu bearbeitende Aufgabe
-     */
-    openEditTask(task: Task) {
-      this.selectedTask = { ...task };
+    // Aufgabe bearbeiten
+    openEditTask(task) {
+      this.selectedTask = { ...task }; // Aufgabe für die Bearbeitung auswählen
     },
-
-    /**
-     * Aktualisiert eine Aufgabe und synchronisiert sie mit dem Backend
-     * @param {Task} updatedTask - Die aktualisierte Aufgabe
-     */
-    async editTask(updatedTask: Task) {
+    // Aufgabe aktualisieren
+    async editTask(updatedTask) {
       try {
-        const response = await axios.put(`${BACKEND_URL}/${updatedTask.id}`, updatedTask);
-        const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+        const response = await axios.put(
+            `https://todolist-zdkp.onrender.com/api/tasks/${updatedTask.id}`,
+            updatedTask
+        );
+        const index = this.tasks.findIndex(
+            (task) => task.id === updatedTask.id
+        );
         if (index !== -1) {
-          this.tasks.splice(index, 1, response.data);
+          this.tasks.splice(index, 1, response.data); // Aufgabe in der Liste aktualisieren
         }
-        this.selectedTask = null;
+        this.selectedTask = null; // Bearbeitung beenden
       } catch (error) {
-        console.error('Fehler beim Bearbeiten der Aufgabe:', error);
+        console.error("Fehler beim Bearbeiten der Aufgabe:", error.message);
       }
-    }
+    },
   },
   mounted() {
-    this.fetchTasks(); // Lädt Aufgaben beim Mounten der Komponente
-  }
-});
+    this.fetchTasks(); // Aufgaben beim Laden der Komponente abrufen
+  },
+};
 </script>
 
 <style scoped>
 .task-list {
-  max-width: 70%;
+  width: 50%;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-h2 {
-  text-align: center;
-  color: #333;
-}
-
 .task-items {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
 }
 </style>
