@@ -2,6 +2,7 @@
   <div class="task-list">
     <h2>Meine Aufgaben</h2>
     <ul class="task-items">
+      <!-- Render each task using the TaskItem component -->
       <TaskItem
           v-for="task in tasks"
           :key="task.id"
@@ -11,10 +12,10 @@
       />
     </ul>
 
-    <!-- EditTask anzeigen, wenn eine Aufgabe bearbeitet wird -->
+    <!-- Render the EditTask component when a task is selected for editing -->
     <EditTask v-if="selectedTask" :task="selectedTask" @editTask="editTask" />
 
-    <!-- AddTask zum Hinzufügen einer neuen Aufgabe -->
+    <!-- Render the AddTask component for adding a new task -->
     <AddTask @addTask="addTask" />
   </div>
 </template>
@@ -26,61 +27,57 @@ import TaskItem from '../components/TaskItem.vue';
 import EditTask from '../components/EditTask.vue';
 import type { Task } from '@/model/Task';
 import axios from 'axios';
-
-const apiEndpoint = 'https://example.com/api/tasks'; // Backend-URL anpassen
-
 export default defineComponent({
-  components: { TaskItem, AddTask, EditTask },
+  components: {
+    TaskItem,
+    AddTask,
+    EditTask
+  },
   data() {
     return {
-      tasks: [] as Task[],               // Aufgabenliste
-      selectedTask: null as Task | null, // Aktuell bearbeitete Aufgabe
+      tasks: [] as Task[],
+      selectedTask: null as Task | null
     };
-  },
-  created() {
-    this.fetchTasks(); // Aufgaben beim Laden der Komponente abrufen
   },
   methods: {
     async fetchTasks() {
       try {
-        const response = await axios.get<Task[]>(apiEndpoint); // Typ Task[]
+        const response = await axios.get('https://todolist-zdkp.onrender.com');
         this.tasks = response.data;
       } catch (error) {
-        console.error('Fehler beim Laden der Aufgaben:', error);
+        console.error('Error fetching tasks:', error);
       }
     },
-    async addTask(inputData: { value: string }) {
-      try {
-        const response = await axios.post<Task>(apiEndpoint, { name: inputData.value }); // Payload { name: ... }
-        this.tasks.push(response.data);
-      } catch (error) {
-        console.error('Fehler beim Hinzufügen der Aufgabe:', error);
-      }
-    },
-    async deleteTask(id: number) {
-      try {
-        const response = await axios.delete(`${apiEndpoint}/${id}`); // DELETE-Endpunkt
-        console.log('Aufgabe gelöscht:', response.data);
-        this.tasks = this.tasks.filter((task) => task.id !== id);
-      } catch (error) {
-        console.error('Fehler beim Löschen der Aufgabe:', error);
-      }
+    deleteTask(taskId: number) {
+      console.log(`Delete task with ID: ${taskId}`);
     },
     openEditTask(task: Task) {
-      this.selectedTask = { ...task };
+      this.selectedTask = task;
     },
-    async editTask(updatedTask: Task) {
-      try {
-        const response = await axios.put(`${apiEndpoint}/${updatedTask.id}`, updatedTask);
-        const index = this.tasks.findIndex((task) => task.id === updatedTask.id);
-        if (index !== -1) {
-          this.tasks.splice(index, 1, response.data);
-        }
-        this.selectedTask = null;
-      } catch (error) {
-        console.error('Fehler beim Bearbeiten der Aufgabe:', error);
+    editTask(updatedTask: Task) {
+      // Update the task in the list with the edited version
+      const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+      if (index !== -1) {
+        this.tasks.splice(index, 1, updatedTask);
       }
+      this.selectedTask = null; // Close the edit view
     },
+    addTask(newTask: Task) {
+      this.tasks.push(newTask);
+    }
   },
+  mounted() {
+    this.fetchTasks();
+  }
 });
 </script>
+
+<style scoped>
+.task-list {
+  margin: 20px;
+}
+.task-items {
+  list-style-type: none;
+  padding: 0;
+}
+</style>
