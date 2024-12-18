@@ -1,8 +1,9 @@
 <template>
   <div class="task-list">
     <h2>Meine Aufgaben</h2>
+
+    <!-- Liste der Aufgaben -->
     <ul class="task-items">
-      <!-- Render each task using the TaskItem component -->
       <TaskItem
           v-for="task in tasks"
           :key="task.id"
@@ -12,10 +13,14 @@
       />
     </ul>
 
-    <!-- Render the EditTask component when a task is selected for editing -->
-    <EditTask v-if="selectedTask" :task="selectedTask" @editTask="editTask" />
+    <!-- Bearbeiten einer Aufgabe -->
+    <EditTask
+        v-if="selectedTask"
+        :task="selectedTask"
+        @editTask="editTask"
+    />
 
-    <!-- Render the AddTask component for adding a new task -->
+    <!-- Neue Aufgabe hinzufügen -->
     <AddTask @addTask="addTask" />
   </div>
 </template>
@@ -35,45 +40,51 @@ export default defineComponent({
   },
   data() {
     return {
-      tasks: [] as Task[],
-      selectedTask: null as Task | null
+      tasks: [] as Task[],            // Liste der Aufgaben
+      selectedTask: null as Task | null // Für die Bearbeitung ausgewählte Aufgabe
     };
   },
   methods: {
     /**
-     * Adds a new task to the tasks array
-     * @param {Task} task - The task object to add
+     * Fügt eine neue Aufgabe zur Liste hinzu.
+     * @param {Task} task - Die neue Aufgabe
      */
     addTask(task: Task) {
-      this.tasks.push(task);
+      const newTask: Task = {
+        id: Date.now(),
+        name: task.name || 'Neue Aufgabe', // Standardwert für Name
+        description: task.description || '', // Optional
+        completed: false // Standardstatus
+      };
+      this.tasks.push(newTask);
     },
 
     /**
-     * Deletes a task by its ID
-     * @param {number} id - The ID of the task to delete
+     * Löscht eine Aufgabe anhand der ID.
+     * @param {number} id - Die ID der zu löschenden Aufgabe
      */
     deleteTask(id: number) {
       this.tasks = this.tasks.filter(task => task.id !== id);
     },
 
     /**
-     * Opens the EditTask component by setting the selectedTask
-     * @param {Task} task - The task object to edit
+     * Öffnet die Bearbeitungsansicht für eine Aufgabe.
+     * @param {Task} task - Die zu bearbeitende Aufgabe
      */
     openEditTask(task: Task) {
-      this.selectedTask = { ...task };
+      this.selectedTask = { ...task }; // Kopie der Aufgabe erstellen
     },
 
     /**
-     * Updates a task in the tasks array and closes the EditTask component
-     * @param {Task} updatedTask - The updated task object
+     * Aktualisiert eine bearbeitete Aufgabe.
+     * @param {Task} updatedTask - Die bearbeitete Aufgabe
      */
     editTask(updatedTask: Task) {
       const index = this.tasks.findIndex(task => task.id === updatedTask.id);
       if (index !== -1) {
         this.tasks.splice(index, 1, updatedTask);
       }
-      this.selectedTask = null;
+      this.selectedTask = null; // Bearbeitungsansicht schließen
     }
   }
 });
@@ -97,5 +108,6 @@ h2 {
 .task-items {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 </style>

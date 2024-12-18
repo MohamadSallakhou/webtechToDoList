@@ -1,5 +1,7 @@
 export interface Task {
-    readonly id: number;    // Eindeutige ID für die Aufgabe
-    name: string;           // Name der Aufgabe
-    completed?: boolean;    // Optional: Status der Aufgabe
+    readonly id: number;
+    name: string;           // Nicht optional
+    description: string;    // Beschreibung der Aufgabe
+    completed: boolean;     // Status der Aufgabe
+    dueDate?: string;       // Optional
 }
