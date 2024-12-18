@@ -1,22 +1,29 @@
 import { defineComponent, ref } from 'vue';
+import type { Task } from '@/model/Task';
+
 export default defineComponent({
     name: 'AddTask',
     emits: ['addTask'],
     setup(_, { emit }) {
-        // Define TaskName as a ref variable of type `string`
-        const taskName = ref('');
+        const taskName = ref<string>('');
+
         const submitTask = () => {
             if (taskName.value.trim()) {
-                // Add task and emit event
-                emit('addTask', { id: Date.now(), name: taskName.value });
-                taskName.value = ''; // Reset input
+                const newTask: Task = {
+                    id: Date.now(),
+                    name: taskName.value,
+                    completed: false,
+                };
+                emit('addTask', newTask);
+                taskName.value = '';
             }
         };
-        return {
-            taskName,
-            submitTask
-        };
-    }
+
+        return { taskName, submitTask };
+    },
+});
+
+}
 });
 ; /* PartiallyEnd: #3632/script.vue */
 function __VLS_template() {
@@ -34,8 +41,8 @@ function __VLS_template() {
     let __VLS_directives;
     let __VLS_styleScopedClasses;
     __VLS_styleScopedClasses['add-button'];
-    // CSS variable injection 
-    // CSS variable injection end 
+    // CSS variable injection
+    // CSS variable injection end
     let __VLS_resolvedLocalAndGlobalComponents;
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("add-task") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});

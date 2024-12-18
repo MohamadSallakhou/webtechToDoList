@@ -13,29 +13,31 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import type { Task } from '@/model/Task';
 
 export default defineComponent({
   name: 'AddTask',
   emits: ['addTask'],
   setup(_, { emit }) {
-    // Define TaskName as a ref variable of type `string`
     const taskName = ref<string>('');
 
     const submitTask = () => {
       if (taskName.value.trim()) {
-        // Add task and emit event
-        emit('addTask', { id: Date.now(), name: taskName.value });
-        taskName.value = ''; // Reset input
+        const newTask: Task = {
+          id: Date.now(),
+          name: taskName.value,
+          completed: false,
+        };
+        emit('addTask', newTask);
+        taskName.value = '';
       }
     };
 
-    return {
-      taskName,
-      submitTask
-    };
-  }
+    return { taskName, submitTask };
+  },
 });
 </script>
+
 
 <style scoped>
 .add-task {

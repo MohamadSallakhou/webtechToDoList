@@ -1,19 +1,22 @@
 import { defineComponent } from 'vue';
+import type { Task } from '@/model/Task';
+
 export default defineComponent({
     name: 'EditTask',
     props: {
         task: {
-            type: Object,
-            required: true
-        }
-    },
-    emits: ['editTask'],
+            type: Object as () => Task,
+    required: true,
+},
+},
+emits: ['editTask'],
     methods: {
-        submitEdit() {
-            this.$emit('editTask', this.task); // Emit the edited task
-        }
-    }
+    submitEdit() {
+        this.$emit('editTask', this.task);
+    },
+},
 });
+
 ; /* PartiallyEnd: #3632/script.vue */
 function __VLS_template() {
     const __VLS_ctx = {};

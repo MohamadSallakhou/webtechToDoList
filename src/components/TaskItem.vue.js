@@ -1,13 +1,17 @@
 import { defineComponent } from 'vue';
+import type { Task } from '@/model/Task';
+
 export default defineComponent({
     name: 'TaskItem',
     props: {
         task: {
-            type: Object,
-            required: true
-        }
-    }
+            type: Object as () => Task,
+    required: true,
+},
+},
+emits: ['deleteTask', 'editTask'],
 });
+
 ; /* PartiallyEnd: #3632/script.vue */
 function __VLS_template() {
     const __VLS_ctx = {};
