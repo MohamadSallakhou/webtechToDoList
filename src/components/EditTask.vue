@@ -1,7 +1,7 @@
 <template>
-  <div v-if="task" class="edit-task">
+  <div v-if="localTask" class="edit-task">
     <h3>Aufgabe bearbeiten</h3>
-    <input type="text" v-model="task.name" class="task-input" />
+    <input type="text" v-model="localTask.name" class="task-input" />
     <button @click="submitEdit" class="save-button">Speichern</button>
   </div>
 </template>
@@ -19,9 +19,14 @@ export default defineComponent({
     }
   },
   emits: ['editTask'],
+  data() {
+    return {
+      localTask: { ...this.task } // Lokale Kopie der Prop erstellen
+    };
+  },
   methods: {
     submitEdit() {
-      this.$emit('editTask', this.task); // Emit the edited task
+      this.$emit('editTask', this.localTask); // Bearbeitete Kopie zurückgeben
     }
   }
 });
