@@ -10,19 +10,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import type { Task } from '@/model/Task';
+import type { Task } from '../types/Task';
 
 export default defineComponent({
   name: 'TaskItem',
   props: {
     task: {
       type: Object as () => Task,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 });
 </script>
-
 
 <style scoped>
 .task-item {
