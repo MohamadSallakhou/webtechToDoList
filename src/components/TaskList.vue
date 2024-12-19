@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import axios from 'axios';
 import TaskItem from './TaskItem.vue';
 import AddTask from './AddTask.vue';
 import EditTask from './EditTask.vue';
@@ -31,51 +32,58 @@ export default defineComponent({
   components: {
     TaskItem,
     AddTask,
-    EditTask
+    EditTask,
   },
   data() {
     return {
       tasks: [] as Task[],
-      selectedTask: null as Task | null
+      selectedTask: null as Task | null,
     };
   },
   methods: {
-    /**
-     * Adds a new task to the tasks array
-     * @param {Task} task - The task object to add
-     */
-    addTask(task: Task) {
-      this.tasks.push(task);
+    async fetchTasks() {
+      try {
+        const response = await axios.get('/tasks');
+        this.tasks = response.data;
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
     },
-
-    /**
-     * Deletes a task by its ID
-     * @param {number} id - The ID of the task to delete
-     */
-    deleteTask(id: number) {
-      this.tasks = this.tasks.filter(task => task.id !== id);
+    async addTask(task: Task) {
+      try {
+        const response = await axios.post('/tasks', task);
+        this.tasks.push(response.data);
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
     },
-
-    /**
-     * Opens the EditTask component by setting the selectedTask
-     * @param {Task} task - The task object to edit
-     */
+    async deleteTask(id: number) {
+      try {
+        await axios.delete(`/tasks/${id}`);
+        this.tasks = this.tasks.filter((task) => task.id !== id);
+      } catch (error) {
+        console.error('Error deleting task:', error);
+      }
+    },
     openEditTask(task: Task) {
       this.selectedTask = { ...task };
     },
-
-    /**
-     * Updates a task in the tasks array and closes the EditTask component
-     * @param {Task} updatedTask - The updated task object
-     */
-    editTask(updatedTask: Task) {
-      const index = this.tasks.findIndex(task => task.id === updatedTask.id);
-      if (index !== -1) {
-        this.tasks.splice(index, 1, updatedTask);
+    async editTask(updatedTask: Task) {
+      try {
+        const response = await axios.put(`/tasks/${updatedTask.id}`, updatedTask);
+        const index = this.tasks.findIndex((task) => task.id === updatedTask.id);
+        if (index !== -1) {
+          this.tasks.splice(index, 1, response.data);
+        }
+        this.selectedTask = null;
+      } catch (error) {
+        console.error('Error updating task:', error);
       }
-      this.selectedTask = null;
-    }
-  }
+    },
+  },
+  mounted() {
+    this.fetchTasks();
+  },
 });
 </script>
 

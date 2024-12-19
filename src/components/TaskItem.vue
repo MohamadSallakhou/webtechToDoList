@@ -1,7 +1,8 @@
 <template>
   <li class="task-item">
-    <span>{{ task.name }}</span>
+    <span>{{ task.description }}</span>
     <div class="buttons">
+      <input type="checkbox" v-if="task.completed" checked onclick="return false;" onkeydown="return false;">
       <button @click="$emit('editTask', task)" class="edit-button">Bearbeiten</button>
       <button @click="$emit('deleteTask', task.id)" class="delete-button">Löschen</button>
     </div>
@@ -17,9 +18,9 @@ export default defineComponent({
   props: {
     task: {
       type: Object as () => Task,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>
 

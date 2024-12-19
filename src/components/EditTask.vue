@@ -1,7 +1,8 @@
 <template>
   <div v-if="localTask" class="edit-task">
     <h3>Aufgabe bearbeiten</h3>
-    <input type="text" v-model="localTask.name" class="task-input" />
+    <input type="text" v-model="localTask.description" class="task-input" />
+    <input type="checkbox" v-model="localTask.completed" class="task-input" />
     <button @click="submitEdit" class="save-button">Speichern</button>
   </div>
 </template>
@@ -15,20 +16,20 @@ export default defineComponent({
   props: {
     task: {
       type: Object as () => Task,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['editTask'],
   data() {
     return {
-      localTask: { ...this.task } // Lokale Kopie der Prop erstellen
+      localTask: { ...this.task },
     };
   },
   methods: {
     submitEdit() {
-      this.$emit('editTask', this.localTask); // Bearbeitete Kopie zurückgeben
-    }
-  }
+      this.$emit('editTask', this.localTask);
+    },
+  },
 });
 </script>
 
