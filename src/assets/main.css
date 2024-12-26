@@ -1,20 +1,30 @@
 @import './base.css';
 
 #app {
-  margin: 0 auto;
-  font-weight: normal;
+  margin: 20px auto; /* Abstand hinzugefügt */
+  max-width: 900px; /* Maximale Breite für bessere Zentrierung */
+  padding: 20px;
+  background-color: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+  color: var(--vt-c-indigo); /* Einheitliche Farbe */
+  font-weight: bold; /* Hebt Links hervor */
+  transition: color 0.3s, background-color 0.3s;
+  padding: 5px 8px; /* Mehr Padding für bessere Klickbarkeit */
+  border-radius: 4px;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    color: var(--vt-c-white);
+    background-color: var(--vt-c-indigo); /* Dynamischer Effekt */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Schatten für Hover */
   }
 }
